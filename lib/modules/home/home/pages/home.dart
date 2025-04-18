@@ -1,4 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:iconly/iconly.dart';
+import 'package:my_playlist/enums/form.enum.dart';
+import 'package:my_playlist/modules/playlist/form/pages/form.dart';
+import 'package:my_playlist/views/buttons/button.dart';
 
 // ANCHOR Home Page
 class HomePage extends StatefulWidget {
@@ -16,6 +20,22 @@ class HomePage extends StatefulWidget {
 
 // ANCHOR Home Page State
 class _HomePageState extends State<HomePage> {
+  // ANCHOR Create
+  void _create() async {
+    Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (
+          BuildContext context,
+        ) {
+          return PlaylistFormPage(
+            mode: FormModeEnum.create,
+          );
+        },
+      ),
+    );
+  }
+
   // ANCHOR Build
   @override
   Widget build(
@@ -27,6 +47,10 @@ class _HomePageState extends State<HomePage> {
           CupertinoSliverNavigationBar(
             largeTitle: const Text(
               'My Playlist',
+            ),
+            trailing: Button(
+              icon: IconlyLight.plus,
+              onPressed: _create,
             ),
           ),
         ],
