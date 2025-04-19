@@ -137,6 +137,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
         leading: BackButton(),
         trailing: PlaylistOptions(
           playlist: _playlist,
+          refetch: _fetch,
         ),
       ),
       child: CustomScrollView(

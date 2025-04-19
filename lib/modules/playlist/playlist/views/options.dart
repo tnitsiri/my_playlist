@@ -4,7 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:iconly/iconly.dart';
 import 'package:my_playlist/cubits/doing.cubit.dart';
+import 'package:my_playlist/enums/form.enum.dart';
 import 'package:my_playlist/models/playlist.model.dart';
+import 'package:my_playlist/modules/playlist/form/pages/form.dart';
 import 'package:my_playlist/plugins/action_sheet/action_sheet.dart';
 import 'package:my_playlist/plugins/custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:my_playlist/services/api.service.dart';
@@ -15,11 +17,13 @@ import 'package:provider/provider.dart';
 // ANCHOR Profile Header Options
 class PlaylistOptions extends StatefulWidget {
   final PlaylistModel playlist;
+  final Function refetch;
 
   // ANCHOR Constructor
   const PlaylistOptions({
     super.key,
     required this.playlist,
+    required this.refetch,
   });
 
   // ANCHOR Create State
@@ -36,6 +40,26 @@ class _PlaylistOptionsState extends State<PlaylistOptions> {
 
   late ApiService _apiService;
   late PlaylistStore _playlistStore;
+
+  // ANCHOR Update
+  void _update() {
+    _controller.hideMenu();
+
+    Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (
+          BuildContext context,
+        ) {
+          return PlaylistFormPage(
+            mode: FormModeEnum.update,
+            playlist: widget.playlist,
+            refetch: widget.refetch,
+          );
+        },
+      ),
+    );
+  }
 
   // ANCHOR Remove
   void _remove() async {
@@ -136,50 +160,44 @@ class _PlaylistOptionsState extends State<PlaylistOptions> {
   Widget build(
     BuildContext context,
   ) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        CustomPopupMenu(
-          controller: _controller,
-          pressType: PressType.singleClick,
-          arrowSize: CustomPopupMenuConfig.arrowSize,
-          arrowColor: CustomPopupMenuConfig.arrowColor,
-          barrierColor: CustomPopupMenuConfig.barrierColor,
-          horizontalMargin: CustomPopupMenuConfig.horizontalMargin,
-          verticalMargin: CustomPopupMenuConfig.verticalMargin,
-          menuBuilder: () {
-            return PopupMenuBuilder(
-              children: [
-                PopupMenuItem(
-                  text: 'Update',
-                  icon: Icon(
-                    IconlyLight.edit,
-                    size: CustomPopupMenuConfig.iconSize,
-                    color: CustomPopupMenuConfig.iconColor,
-                  ),
-                  onPressed: () {},
-                ),
-                PopupMenuItem(
-                  text: 'Delete',
-                  icon: Icon(
-                    IconlyLight.delete,
-                    size: CustomPopupMenuConfig.iconSize,
-                    color: CustomPopupMenuConfig.dangerColor,
-                  ),
-                  danger: true,
-                  last: true,
-                  onPressed: _remove,
-                ),
-              ],
-            );
-          },
-          child: Icon(
-            Feather.more_horizontal,
-            size: 24,
-          ),
-        ),
-      ],
+    return CustomPopupMenu(
+      controller: _controller,
+      pressType: PressType.singleClick,
+      arrowSize: CustomPopupMenuConfig.arrowSize,
+      arrowColor: CustomPopupMenuConfig.arrowColor,
+      barrierColor: CustomPopupMenuConfig.barrierColor,
+      horizontalMargin: CustomPopupMenuConfig.horizontalMargin,
+      verticalMargin: CustomPopupMenuConfig.verticalMargin,
+      menuBuilder: () {
+        return PopupMenuBuilder(
+          children: [
+            PopupMenuItem(
+              text: 'Update',
+              icon: Icon(
+                IconlyLight.edit,
+                size: CustomPopupMenuConfig.iconSize,
+                color: CustomPopupMenuConfig.iconColor,
+              ),
+              onPressed: _update,
+            ),
+            PopupMenuItem(
+              text: 'Delete',
+              icon: Icon(
+                IconlyLight.delete,
+                size: CustomPopupMenuConfig.iconSize,
+                color: CustomPopupMenuConfig.dangerColor,
+              ),
+              danger: true,
+              last: true,
+              onPressed: _remove,
+            ),
+          ],
+        );
+      },
+      child: Icon(
+        Feather.more_horizontal,
+        size: 24,
+      ),
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_playlist/constants/ui.constant.dart';
 import 'package:my_playlist/cubits/doing.cubit.dart';
 import 'package:my_playlist/enums/form.enum.dart';
@@ -15,11 +14,15 @@ import 'package:provider/provider.dart';
 // ANCHOR Playlist Form Page
 class PlaylistFormPage extends StatefulWidget {
   final FormModeEnum mode;
+  final PlaylistModel? playlist;
+  final Function? refetch;
 
   // ANCHOR Constructor
   const PlaylistFormPage({
     super.key,
     required this.mode,
+    this.playlist,
+    this.refetch,
   });
 
   // ANCHOR Create State
@@ -57,22 +60,43 @@ class _PlaylistFormPageState extends State<PlaylistFormPage> {
     PlaylistModel? playlist;
 
     try {
-      Response response = await _apiService.dio.post(
-        'playlist/create',
-        data: {
-          'title': title,
-        },
-      );
+      if (widget.mode == FormModeEnum.create) {
+        Response response = await _apiService.dio.post(
+          'playlist/create',
+          data: {
+            'title': title,
+          },
+        );
 
-      playlist = PlaylistModel.fromJson(
-        response.data['playlist'],
-      );
+        playlist = PlaylistModel.fromJson(
+          response.data['playlist'],
+        );
+
+        NotifyService.toast(
+          message: 'Playlist created successfully.',
+        );
+      } else if (widget.mode == FormModeEnum.update) {
+        Response response = await _apiService.dio.put(
+          'playlist/${widget.playlist?.id}/update',
+          data: {
+            'title': title,
+          },
+        );
+
+        playlist = PlaylistModel.fromJson(
+          response.data['playlist'],
+        );
+
+        if (widget.refetch != null) {
+          await widget.refetch!();
+        }
+
+        NotifyService.toast(
+          message: 'Playlist updated successfully.',
+        );
+      }
 
       _playlistStore.fetchList();
-
-      NotifyService.toast(
-        message: 'Playlist created successfully.',
-      );
     } on DioException catch (e) {
       if (e.response != null &&
           e.response?.data != null &&
@@ -99,6 +123,19 @@ class _PlaylistFormPageState extends State<PlaylistFormPage> {
     );
   }
 
+  // ANCHOR Init
+  void _init() {
+    if (widget.mode == FormModeEnum.update && widget.playlist != null) {
+      PlaylistModel playlist = widget.playlist!;
+
+      if (mounted) {
+        setState(() {
+          _titleController.text = playlist.title;
+        });
+      }
+    }
+  }
+
   // ANCHOR Providers
   void _providers() {
     _apiService = Provider.of<ApiService>(
@@ -116,6 +153,7 @@ class _PlaylistFormPageState extends State<PlaylistFormPage> {
   @override
   void initState() {
     _providers();
+    _init();
 
     super.initState();
   }
@@ -139,6 +177,9 @@ class _PlaylistFormPageState extends State<PlaylistFormPage> {
     if (widget.mode == FormModeEnum.create) {
       title = 'Create Playlist';
       button = 'Create';
+    } else if (widget.mode == FormModeEnum.update) {
+      title = 'Update Playlist';
+      button = 'Update';
     }
 
     return CupertinoPageScaffold(
