@@ -5,6 +5,9 @@ abstract class CommonStyle {
   // ANCHOR Text Style
   static TextStyle textStyle = TextStyle(
     fontFamily: 'Poppins',
+    fontFamilyFallback: [
+      'Prompt',
+    ],
     fontSize: 15,
     fontWeight: FontWeight.w400,
     color: CupertinoColors.black,

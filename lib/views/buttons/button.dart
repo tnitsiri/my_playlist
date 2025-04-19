@@ -28,7 +28,7 @@ class Button extends StatelessWidget {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: const Color(0xFFF7F8F9),
+          color: CupertinoColors.systemGrey6,
           borderRadius: BorderRadius.circular(
             8,
           ),
