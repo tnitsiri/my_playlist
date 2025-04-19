@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_playlist/constants/ui.constant.dart';
 import 'package:my_playlist/cubits/doing.cubit.dart';
 import 'package:my_playlist/enums/form.enum.dart';
+import 'package:my_playlist/models/playlist.model.dart';
 import 'package:my_playlist/services/api.service.dart';
 import 'package:my_playlist/services/app.service.dart';
 import 'package:my_playlist/services/notify.service.dart';
@@ -51,12 +52,23 @@ class _PlaylistFormPageState extends State<PlaylistFormPage> {
     doingCubit.show();
     AppService.unfocus();
 
+    PlaylistModel? playlist;
+
     try {
-      await _apiService.dio.post(
+      Response response = await _apiService.dio.post(
         'playlist/create',
         data: {
           'title': title,
         },
+      );
+
+      playlist = PlaylistModel.fromJson(
+        response.data['playlist'],
+      );
+
+      NotifyService.toast(
+        message: 'Playlist created successfully.',
+        alignment: Alignment.topCenter,
       );
     } on DioException catch (e) {
       if (e.response != null &&
@@ -73,6 +85,10 @@ class _PlaylistFormPageState extends State<PlaylistFormPage> {
       NotifyService.error();
     } finally {
       doingCubit.hide();
+    }
+
+    if (playlist == null) {
+      return;
     }
   }
 
