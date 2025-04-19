@@ -68,7 +68,6 @@ class _PlaylistFormPageState extends State<PlaylistFormPage> {
 
       NotifyService.toast(
         message: 'Playlist created successfully.',
-        alignment: Alignment.topCenter,
       );
     } on DioException catch (e) {
       if (e.response != null &&
@@ -87,9 +86,13 @@ class _PlaylistFormPageState extends State<PlaylistFormPage> {
       doingCubit.hide();
     }
 
-    if (playlist == null) {
+    if (playlist == null || !mounted) {
       return;
     }
+
+    Navigator.of(context).pop(
+      playlist,
+    );
   }
 
   // ANCHOR Providers

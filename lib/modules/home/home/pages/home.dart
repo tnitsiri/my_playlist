@@ -4,6 +4,7 @@ import 'package:iconly/iconly.dart';
 import 'package:my_playlist/enums/form.enum.dart';
 import 'package:my_playlist/models/playlist.model.dart';
 import 'package:my_playlist/modules/playlist/form/pages/form.dart';
+import 'package:my_playlist/modules/playlist/playlist/pages/playlist.dart';
 import 'package:my_playlist/modules/playlist/playlist/views/card.dart';
 import 'package:my_playlist/services/api.service.dart';
 import 'package:my_playlist/services/notify.service.dart';
@@ -73,14 +74,19 @@ class _HomePageState extends State<HomePage> {
     return isSuccess;
   }
 
+  // ANCHOR Refetch
+  Future<void> _refetch() async {
+    await _fetch();
+  }
+
   // ANCHOR Refresh
   Future<void> _refresh() async {
-    await _fetch();
+    await _refetch();
   }
 
   // ANCHOR Create
   void _create() async {
-    Navigator.push(
+    PlaylistModel? playlist = await Navigator.push(
       context,
       CupertinoPageRoute(
         builder: (
@@ -92,6 +98,25 @@ class _HomePageState extends State<HomePage> {
         },
       ),
     );
+
+    if (playlist == null || !mounted) {
+      return;
+    }
+
+    Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (
+          BuildContext context,
+        ) {
+          return PlaylistPage(
+            playlist: playlist,
+          );
+        },
+      ),
+    );
+
+    _refetch();
   }
 
   // ANCHOR Providers

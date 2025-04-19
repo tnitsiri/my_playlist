@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:my_playlist/constants/ui.constant.dart';
 import 'package:my_playlist/models/playlist.model.dart';
+import 'package:my_playlist/modules/playlist/playlist/pages/playlist.dart';
 
 // ANCHOR Playlist Card View
-class PlaylistCardView extends StatelessWidget {
+class PlaylistCardView extends StatefulWidget {
   final PlaylistModel playlist;
 
   // ANCHOR Constructor
@@ -12,8 +13,30 @@ class PlaylistCardView extends StatelessWidget {
     required this.playlist,
   });
 
+  // ANCHOR Create State
+  @override
+  State<PlaylistCardView> createState() {
+    return _PlaylistCardViewState();
+  }
+}
+
+// ANCHOR Playlist Card View State
+class _PlaylistCardViewState extends State<PlaylistCardView> {
   // ANCHOR View
-  void _view() {}
+  void _view() {
+    Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (
+          BuildContext context,
+        ) {
+          return PlaylistPage(
+            playlist: widget.playlist,
+          );
+        },
+      ),
+    );
+  }
 
   // ANCHOR Build
   @override
@@ -47,10 +70,18 @@ class PlaylistCardView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                width: 80,
+              SizedBox(
+                width: 50,
                 child: AspectRatio(
                   aspectRatio: 1,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: CupertinoColors.systemGrey6,
+                      borderRadius: BorderRadius.circular(
+                        8,
+                      ),
+                    ),
+                  ),
                 ),
               ),
               Expanded(
@@ -59,7 +90,7 @@ class PlaylistCardView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      playlist.title,
+                      widget.playlist.title,
                     ),
                   ],
                 ),
