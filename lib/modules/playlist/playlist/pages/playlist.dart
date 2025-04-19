@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:my_playlist/models/playlist.model.dart';
+import 'package:my_playlist/modules/playlist/playlist/views/options.dart';
 import 'package:my_playlist/services/api.service.dart';
 import 'package:my_playlist/services/notify.service.dart';
+import 'package:my_playlist/stores/playlist.store.dart';
 import 'package:my_playlist/views/buttons/back.dart';
 import 'package:provider/provider.dart';
 
@@ -27,6 +29,7 @@ class PlaylistPage extends StatefulWidget {
 class _PlaylistPageState extends State<PlaylistPage> {
   // ANCHOR State
   late ApiService _apiService;
+  late PlaylistStore _playlistStore;
 
   late PlaylistModel _playlist;
 
@@ -103,6 +106,11 @@ class _PlaylistPageState extends State<PlaylistPage> {
       context,
       listen: false,
     );
+
+    _playlistStore = Provider.of<PlaylistStore>(
+      context,
+      listen: false,
+    );
   }
 
   // ANCHOR Init State
@@ -127,6 +135,9 @@ class _PlaylistPageState extends State<PlaylistPage> {
         ),
         automaticallyImplyLeading: false,
         leading: BackButton(),
+        trailing: PlaylistOptions(
+          playlist: _playlist,
+        ),
       ),
       child: CustomScrollView(
         slivers: [

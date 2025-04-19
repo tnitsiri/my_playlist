@@ -8,6 +8,7 @@ import 'package:my_playlist/models/playlist.model.dart';
 import 'package:my_playlist/services/api.service.dart';
 import 'package:my_playlist/services/app.service.dart';
 import 'package:my_playlist/services/notify.service.dart';
+import 'package:my_playlist/stores/playlist.store.dart';
 import 'package:my_playlist/views/buttons/back.dart';
 import 'package:provider/provider.dart';
 
@@ -34,6 +35,7 @@ class _PlaylistFormPageState extends State<PlaylistFormPage> {
   final TextEditingController _titleController = TextEditingController();
 
   late ApiService _apiService;
+  late PlaylistStore _playlistStore;
 
   // ANCHOR Save
   void _save() async {
@@ -65,6 +67,8 @@ class _PlaylistFormPageState extends State<PlaylistFormPage> {
       playlist = PlaylistModel.fromJson(
         response.data['playlist'],
       );
+
+      _playlistStore.fetchList();
 
       NotifyService.toast(
         message: 'Playlist created successfully.',
@@ -98,6 +102,11 @@ class _PlaylistFormPageState extends State<PlaylistFormPage> {
   // ANCHOR Providers
   void _providers() {
     _apiService = Provider.of<ApiService>(
+      context,
+      listen: false,
+    );
+
+    _playlistStore = Provider.of<PlaylistStore>(
       context,
       listen: false,
     );

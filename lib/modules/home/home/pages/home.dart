@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:iconly/iconly.dart';
+import 'package:mobx/mobx.dart';
 import 'package:my_playlist/enums/form.enum.dart';
 import 'package:my_playlist/models/playlist.model.dart';
 import 'package:my_playlist/modules/playlist/form/pages/form.dart';
@@ -8,6 +9,7 @@ import 'package:my_playlist/modules/playlist/playlist/pages/playlist.dart';
 import 'package:my_playlist/modules/playlist/playlist/views/card.dart';
 import 'package:my_playlist/services/api.service.dart';
 import 'package:my_playlist/services/notify.service.dart';
+import 'package:my_playlist/stores/playlist.store.dart';
 import 'package:my_playlist/views/buttons/button.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +31,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // ANCHOR State
   late ApiService _apiService;
+  late PlaylistStore _playlistStore;
+
+  late ReactionDisposer _playlistFetchListDisposer;
 
   List<PlaylistModel> _playlists = [];
 
@@ -115,13 +120,28 @@ class _HomePageState extends State<HomePage> {
         },
       ),
     );
+  }
 
-    _refetch();
+  // ANCHOR Stores
+  void _stores() {
+    _playlistFetchListDisposer = reaction(
+      (_) => _playlistStore.fetchListToken,
+      (String? token) {
+        if (token != null) {
+          _refetch();
+        }
+      },
+    );
   }
 
   // ANCHOR Providers
   void _providers() {
     _apiService = Provider.of<ApiService>(
+      context,
+      listen: false,
+    );
+
+    _playlistStore = Provider.of<PlaylistStore>(
       context,
       listen: false,
     );
@@ -131,9 +151,18 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     _providers();
+    _stores();
     _fetch();
 
     super.initState();
+  }
+
+  // ANCHOR Dispose
+  @override
+  void dispose() {
+    _playlistFetchListDisposer();
+
+    super.dispose();
   }
 
   // ANCHOR Build

@@ -45,6 +45,10 @@ dependencies:
   flutter_svprogresshud: ^1.1.0
   mobx: ^2.5.0
   flutter_mobx: ^2.3.0
+  custom_pop_up_menu_fork: ^2.0.0
+  flutter_vector_icons: ^2.0.0
+  collection: any
+  uuid: ^4.5.1
 
 dev_dependencies:
   flutter_test:
@@ -57,8 +61,9 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.14.3
-  json_serializable: ^6.9.5
+  json_serializable: any
   build_runner: ^2.4.15
+  mobx_codegen: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
