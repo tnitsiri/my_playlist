@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:my_playlist/constants/ui.constant.dart';
 import 'package:my_playlist/models/playlist.model.dart';
 import 'package:my_playlist/models/song.model.dart';
@@ -226,11 +227,20 @@ class _PlaylistPageState extends State<PlaylistPage> {
           Positioned(
             bottom: MediaQuery.of(context).padding.bottom + UI_SPACING_CONSTANT,
             right: UI_SPACING_CONSTANT,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 1,
-                  color: CupertinoColors.systemRed,
+            child: ClipOval(
+              child: Material(
+                color: CupertinoTheme.of(context).primaryColor,
+                child: InkWell(
+                  onTap: _addSongs,
+                  child: SizedBox(
+                    width: 62,
+                    height: 62,
+                    child: Icon(
+                      Icons.add,
+                      size: 30,
+                      color: CupertinoColors.white,
+                    ),
+                  ),
                 ),
               ),
             ),
