@@ -9,6 +9,7 @@ import 'package:my_playlist/services/app.service.dart';
 import 'package:my_playlist/services/notify.service.dart';
 import 'package:my_playlist/stores/playlist.store.dart';
 import 'package:my_playlist/views/buttons/back.dart';
+import 'package:my_playlist/views/buttons/block.dart';
 import 'package:provider/provider.dart';
 
 // ANCHOR Playlist Form Page
@@ -188,7 +189,7 @@ class _PlaylistFormPageState extends State<PlaylistFormPage> {
           title,
         ),
         automaticallyImplyLeading: false,
-        leading: BackButton(),
+        leading: ButtonBack(),
       ),
       child: CustomScrollView(
         slivers: [
@@ -219,7 +220,7 @@ class _PlaylistFormPageState extends State<PlaylistFormPage> {
                       color: CupertinoColors.inactiveGray,
                     ),
                     padding: EdgeInsets.symmetric(
-                      vertical: 12,
+                      vertical: 11,
                       horizontal: 15,
                     ),
                     decoration: BoxDecoration(
@@ -233,17 +234,9 @@ class _PlaylistFormPageState extends State<PlaylistFormPage> {
                       ),
                     ),
                   ),
-                  CupertinoButton(
-                    color: CupertinoTheme.of(context).primaryColor,
+                  ButtonBlock(
+                    text: button,
                     onPressed: _save,
-                    child: Text(
-                      button,
-                      style: TextStyle(
-                        color: CupertinoColors.white,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
                   ),
                 ],
               ),

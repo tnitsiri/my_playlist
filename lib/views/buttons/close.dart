@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
-import 'package:iconly/iconly.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:my_playlist/views/buttons/button.dart';
 
-// ANCHOR Button Back
-class ButtonBack extends StatelessWidget {
+// ANCHOR Button Close
+class ButtonClose extends StatelessWidget {
   // ANCHOR Constructor
-  const ButtonBack({
+  const ButtonClose({
     super.key,
   });
 
@@ -15,7 +15,7 @@ class ButtonBack extends StatelessWidget {
     BuildContext context,
   ) {
     return Button(
-      icon: IconlyLight.arrow_left,
+      icon: Ionicons.close,
       onPressed: () {
         Navigator.of(context).pop();
       },

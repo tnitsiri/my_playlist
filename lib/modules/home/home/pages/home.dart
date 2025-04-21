@@ -185,21 +185,26 @@ class _HomePageState extends State<HomePage> {
           CupertinoSliverRefreshControl(
             onRefresh: _refresh,
           ),
-          SliverList.builder(
-            itemCount: _playlists.length,
-            itemBuilder: (
-              BuildContext context,
-              int index,
-            ) {
-              PlaylistModel playlist = _playlists[index];
+          SliverPadding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).padding.bottom,
+            ),
+            sliver: SliverList.builder(
+              itemCount: _playlists.length,
+              itemBuilder: (
+                BuildContext context,
+                int index,
+              ) {
+                PlaylistModel playlist = _playlists[index];
 
-              return PlaylistCardView(
-                key: ValueKey(
-                  playlist.id,
-                ),
-                playlist: playlist,
-              );
-            },
+                return PlaylistCardView(
+                  key: ValueKey(
+                    playlist.id,
+                  ),
+                  playlist: playlist,
+                );
+              },
+            ),
           ),
         ],
       ),

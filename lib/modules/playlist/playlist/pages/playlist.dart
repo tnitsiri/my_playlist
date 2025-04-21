@@ -1,11 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:my_playlist/constants/ui.constant.dart';
 import 'package:my_playlist/models/playlist.model.dart';
+import 'package:my_playlist/models/song.model.dart';
 import 'package:my_playlist/modules/playlist/playlist/views/options.dart';
+import 'package:my_playlist/modules/song/add/pages/add.dart';
+import 'package:my_playlist/modules/song/song/views/card.dart';
 import 'package:my_playlist/services/api.service.dart';
 import 'package:my_playlist/services/notify.service.dart';
 import 'package:my_playlist/stores/playlist.store.dart';
 import 'package:my_playlist/views/buttons/back.dart';
+import 'package:my_playlist/views/buttons/simple.dart';
 import 'package:provider/provider.dart';
 
 // ANCHOR Playlist Page
@@ -33,6 +38,8 @@ class _PlaylistPageState extends State<PlaylistPage> {
 
   late PlaylistModel _playlist;
 
+  List<SongModel> _songs = [];
+
   // ANCHOR Fetch
   Future<bool> _fetch({
     bool showError = true,
@@ -51,6 +58,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
       if (mounted) {
         setState(() {
           _playlist = playlist;
+          _songs = playlist.songs;
         });
       }
 
@@ -91,11 +99,32 @@ class _PlaylistPageState extends State<PlaylistPage> {
     await _fetch();
   }
 
+  // ANCHOR Add Songs
+  void _addSongs() async {
+    bool? isSuccess = await showCupertinoModalPopup(
+      context: context,
+      builder: (
+        BuildContext context,
+      ) {
+        return SongAddPage(
+          playlist: _playlist,
+        );
+      },
+    );
+
+    if (isSuccess == null || !isSuccess) {
+      return;
+    }
+
+    _fetch();
+  }
+
   // ANCHOR Init
   void _init() {
     if (mounted) {
       setState(() {
         _playlist = widget.playlist;
+        _songs = widget.playlist.songs;
       });
     }
   }
@@ -128,25 +157,86 @@ class _PlaylistPageState extends State<PlaylistPage> {
   Widget build(
     BuildContext context,
   ) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text(
-          _playlist.title,
+    return Stack(
+      children: [
+        CupertinoPageScaffold(
+          navigationBar: CupertinoNavigationBar(
+            middle: Text(
+              _playlist.title,
+            ),
+            automaticallyImplyLeading: false,
+            leading: ButtonBack(),
+            trailing: PlaylistOptions(
+              playlist: _playlist,
+              refetch: _fetch,
+            ),
+          ),
+          child: CustomScrollView(
+            slivers: [
+              CupertinoSliverRefreshControl(
+                onRefresh: _refresh,
+              ),
+              if (_songs.isNotEmpty) ...[
+                SliverPadding(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).padding.bottom,
+                  ),
+                  sliver: SliverList.builder(
+                    itemCount: _songs.length,
+                    itemBuilder: (
+                      BuildContext context,
+                      int index,
+                    ) {
+                      SongModel song = _songs[index];
+
+                      return SongCardView(
+                        key: ValueKey(
+                          song.id,
+                        ),
+                        song: song,
+                      );
+                    },
+                  ),
+                ),
+              ] else ...[
+                SliverToBoxAdapter(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 50,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 1,
+                        color: CupertinoColors.activeOrange,
+                      ),
+                    ),
+                    child: ButtonSimple(
+                      onPressed: _addSongs,
+                      child: Text(
+                        'Add Songs',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
-        automaticallyImplyLeading: false,
-        leading: BackButton(),
-        trailing: PlaylistOptions(
-          playlist: _playlist,
-          refetch: _fetch,
-        ),
-      ),
-      child: CustomScrollView(
-        slivers: [
-          CupertinoSliverRefreshControl(
-            onRefresh: _refresh,
+        if (_songs.isNotEmpty) ...[
+          Positioned(
+            bottom: MediaQuery.of(context).padding.bottom + UI_SPACING_CONSTANT,
+            right: UI_SPACING_CONSTANT,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 1,
+                  color: CupertinoColors.systemRed,
+                ),
+              ),
+            ),
           ),
         ],
-      ),
+      ],
     );
   }
 }

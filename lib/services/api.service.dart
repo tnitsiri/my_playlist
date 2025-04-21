@@ -15,13 +15,13 @@ class ApiService {
       baseUrl: 'http://172.20.10.3:5100/',
       // baseUrl: 'http://localhost:5100/',
       connectTimeout: const Duration(
-        seconds: 5,
+        minutes: 5,
       ),
       sendTimeout: const Duration(
-        seconds: 5,
+        minutes: 5,
       ),
       receiveTimeout: const Duration(
-        seconds: 5,
+        minutes: 5,
       ),
     );
 
