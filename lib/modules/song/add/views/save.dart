@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:iconly/iconly.dart';
 import 'package:my_playlist/constants/ui.constant.dart';
 import 'package:my_playlist/cubits/doing.cubit.dart';
@@ -142,6 +143,7 @@ class _SongAddSaveViewState extends State<SongAddSaveView> {
             child: ButtonBlock(
               text:
                   'Add ${widget.songsId.length} Song${widget.songsId.length > 1 ? 's' : ''}',
+              icon: Ionicons.musical_notes_outline,
               onPressed: _save,
             ),
           ),

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:my_playlist/constants/ui.constant.dart';
 import 'package:my_playlist/cubits/doing.cubit.dart';
 import 'package:my_playlist/enums/form.enum.dart';
@@ -236,6 +237,7 @@ class _PlaylistFormPageState extends State<PlaylistFormPage> {
                   ),
                   ButtonBlock(
                     text: button,
+                    icon: Ionicons.save_outline,
                     onPressed: _save,
                   ),
                 ],
