@@ -11,6 +11,7 @@ import 'package:my_playlist/plugins/action_sheet/action_sheet.dart';
 import 'package:my_playlist/plugins/custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:my_playlist/services/api.service.dart';
 import 'package:my_playlist/services/notify.service.dart';
+import 'package:my_playlist/stores/player.store.dart';
 import 'package:my_playlist/stores/playlist.store.dart';
 import 'package:provider/provider.dart';
 
@@ -40,6 +41,7 @@ class _PlaylistOptionsState extends State<PlaylistOptions> {
 
   late ApiService _apiService;
   late PlaylistStore _playlistStore;
+  late PlayerStore _playerStore;
 
   // ANCHOR Update
   void _update() {
@@ -105,6 +107,11 @@ class _PlaylistOptionsState extends State<PlaylistOptions> {
         message: 'Playlist was removed successfully.',
       );
 
+      if (_playerStore.playlist != null &&
+          _playerStore.playlist!.id == widget.playlist.id) {
+        await _playerStore.clear();
+      }
+
       if (mounted) {
         Navigator.of(context).pop();
       }
@@ -134,6 +141,11 @@ class _PlaylistOptionsState extends State<PlaylistOptions> {
     );
 
     _playlistStore = Provider.of<PlaylistStore>(
+      context,
+      listen: false,
+    );
+
+    _playerStore = Provider.of<PlayerStore>(
       context,
       listen: false,
     );

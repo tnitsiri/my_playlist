@@ -34,10 +34,27 @@ abstract class PlayerStoreBase with Store {
     required List<SongModel> songs,
     int? index,
   }) async {
-    await audioHandler.stop();
-
     this.playlist = playlist;
 
+    await audioHandler.stop();
+    await update(
+      songs: songs,
+    );
+
+    if (index != null && index > -1 && index <= songs.length - 1) {
+      await audioHandler.skipToQueueItem(
+        index,
+      );
+    }
+
+    await audioHandler.play();
+  }
+
+  // ANCHOR Update
+  @action
+  Future<void> update({
+    required List<SongModel> songs,
+  }) async {
     List<MediaItem> queue = [];
 
     for (SongModel song in songs) {
@@ -49,13 +66,32 @@ abstract class PlayerStoreBase with Store {
     await audioHandler.updateQueue(
       queue,
     );
+  }
 
-    if (index != null && index > -1 && index <= songs.length - 1) {
-      await audioHandler.skipToQueueItem(
-        index,
+  // ANCHOR Append
+  @action
+  Future<void> append({
+    required List<SongModel> songs,
+  }) async {
+    List<MediaItem> queue = [];
+
+    for (SongModel song in songs) {
+      queue.add(
+        song.mediaItem,
       );
     }
 
-    await audioHandler.play();
+    audioHandler.addQueueItems(
+      queue,
+    );
+  }
+
+  // ANCHOR Clear
+  @action
+  Future<void> clear() async {
+    await audioHandler.stop();
+    await audioHandler.updateQueue([]);
+
+    playlist = null;
   }
 }

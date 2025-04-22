@@ -44,10 +44,15 @@ class _PlaylistPageState extends State<PlaylistPage> {
   // ANCHOR Fetch
   Future<bool> _fetch({
     bool showError = true,
+    bool isAdded = false,
   }) async {
     bool isSuccess = false;
 
     try {
+      List<String> songsId = _songs.map((e) {
+        return e.id;
+      }).toList();
+
       Response response = await _apiService.dio.get(
         'playlist/${widget.playlist.id}/info',
       );
@@ -55,6 +60,27 @@ class _PlaylistPageState extends State<PlaylistPage> {
       PlaylistModel playlist = PlaylistModel.fromJson(
         response.data['playlist'],
       );
+
+      if (isAdded) {
+        if (_playerStore.playlist != null &&
+            _playerStore.playlist!.id == playlist.id) {
+          List<SongModel> songs = [];
+
+          for (SongModel song in playlist.songs) {
+            if (!songsId.contains(song.id)) {
+              songs.add(
+                song,
+              );
+            }
+          }
+
+          if (songs.isNotEmpty) {
+            await _playerStore.append(
+              songs: songs,
+            );
+          }
+        }
+      }
 
       if (mounted) {
         setState(() {
@@ -117,7 +143,9 @@ class _PlaylistPageState extends State<PlaylistPage> {
       return;
     }
 
-    _fetch();
+    await _fetch(
+      isAdded: true,
+    );
   }
 
   // ANCHOR Init
@@ -180,7 +208,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
               if (_songs.isNotEmpty) ...[
                 SliverPadding(
                   padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).padding.bottom,
+                    bottom: MediaQuery.of(context).padding.bottom + 100,
                   ),
                   sliver: SliverList.builder(
                     itemCount: _songs.length,

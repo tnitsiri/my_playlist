@@ -57,6 +57,30 @@ mixin _$PlayerStore on PlayerStoreBase, Store {
         .run(() => super.play(playlist: playlist, songs: songs, index: index));
   }
 
+  late final _$updateAsyncAction =
+      AsyncAction('PlayerStoreBase.update', context: context);
+
+  @override
+  Future<void> update({required List<SongModel> songs}) {
+    return _$updateAsyncAction.run(() => super.update(songs: songs));
+  }
+
+  late final _$appendAsyncAction =
+      AsyncAction('PlayerStoreBase.append', context: context);
+
+  @override
+  Future<void> append({required List<SongModel> songs}) {
+    return _$appendAsyncAction.run(() => super.append(songs: songs));
+  }
+
+  late final _$clearAsyncAction =
+      AsyncAction('PlayerStoreBase.clear', context: context);
+
+  @override
+  Future<void> clear() {
+    return _$clearAsyncAction.run(() => super.clear());
+  }
+
   @override
   String toString() {
     return '''
