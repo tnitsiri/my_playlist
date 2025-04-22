@@ -14,6 +14,7 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
       BehaviorSubject.seeded(<MediaItem>[]);
   final _mediaLibrary = MediaLibrary();
   final _player = AudioPlayer();
+  // ignore: deprecated_member_use
   final _playlist = ConcatenatingAudioSource(children: []);
   @override
   final BehaviorSubject<double> volume = BehaviorSubject.seeded(1.0);
@@ -39,7 +40,7 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
   /// Computes the effective queue index taking shuffle mode into account.
   int? getQueueIndex(
       int? currentIndex, bool shuffleModeEnabled, List<int>? shuffleIndices) {
-    final effectiveIndices = _player.effectiveIndices ?? [];
+    final effectiveIndices = _player.effectiveIndices;
     final shuffleIndicesInv = List.filled(effectiveIndices.length, 0);
     for (var i = 0; i < effectiveIndices.length; i++) {
       shuffleIndicesInv[effectiveIndices[i]] = i;
@@ -110,8 +111,8 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
       playbackState.add(playbackState.value.copyWith(speed: speed));
     });
     // Load and broadcast the initial queue
-    await updateQueue(_mediaLibrary.items[MediaLibrary.albumsRootId3]!);
-    // await updateQueue([]);
+    // await updateQueue(_mediaLibrary.items[MediaLibrary.albumsRootId3]!);
+    await updateQueue([]);
 
     // For Android 11, record the most recent item so it can be resumed.
     mediaItem
@@ -149,6 +150,8 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
     // Load the playlist.
     _playlist.addAll(queue.value.map(_itemToSource).toList());
     await _player.setAudioSource(_playlist);
+
+    await _player.stop();
   }
 
   AudioSource _itemToSource(MediaItem mediaItem) {
@@ -213,7 +216,7 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
   @override
   Future<void> updateMediaItem(MediaItem mediaItem) async {
     final index = queue.value.indexWhere((item) => item.id == mediaItem.id);
-    _mediaItemExpando[_player.sequence![index]] = mediaItem;
+    _mediaItemExpando[_player.sequence[index]] = mediaItem;
   }
 
   @override
@@ -238,9 +241,8 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
     if (index < 0 || index >= _playlist.children.length) return;
     // This jumps to the beginning of the queue item at [index].
     _player.seek(Duration.zero,
-        index: _player.shuffleModeEnabled
-            ? _player.shuffleIndices![index]
-            : index);
+        index:
+            _player.shuffleModeEnabled ? _player.shuffleIndices[index] : index);
   }
 
   @override

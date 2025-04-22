@@ -23,17 +23,20 @@ abstract class PlayerStoreBase with Store {
   @observable
   late AudioPlayerHandler audioHandler;
 
-  // ANCHOR Medias
+  // ANCHOR Playlist
   @observable
-  late List<MediaItem> medias = [];
+  PlaylistModel? playlist;
 
   // ANCHOR Play
   @action
   Future<void> play({
     required PlaylistModel playlist,
     required List<SongModel> songs,
+    int? index,
   }) async {
     await audioHandler.stop();
+
+    this.playlist = playlist;
 
     List<MediaItem> queue = [];
 
@@ -46,6 +49,12 @@ abstract class PlayerStoreBase with Store {
     await audioHandler.updateQueue(
       queue,
     );
+
+    if (index != null && index > -1 && index <= songs.length - 1) {
+      await audioHandler.skipToQueueItem(
+        index,
+      );
+    }
 
     await audioHandler.play();
   }

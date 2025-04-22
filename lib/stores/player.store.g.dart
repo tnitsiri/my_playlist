@@ -29,23 +29,19 @@ mixin _$PlayerStore on PlayerStoreBase, Store {
     });
   }
 
-  late final _$mediasAtom =
-      Atom(name: 'PlayerStoreBase.medias', context: context);
+  late final _$playlistAtom =
+      Atom(name: 'PlayerStoreBase.playlist', context: context);
 
   @override
-  List<MediaItem> get medias {
-    _$mediasAtom.reportRead();
-    return super.medias;
+  PlaylistModel? get playlist {
+    _$playlistAtom.reportRead();
+    return super.playlist;
   }
 
-  bool _mediasIsInitialized = false;
-
   @override
-  set medias(List<MediaItem> value) {
-    _$mediasAtom.reportWrite(value, _mediasIsInitialized ? super.medias : null,
-        () {
-      super.medias = value;
-      _mediasIsInitialized = true;
+  set playlist(PlaylistModel? value) {
+    _$playlistAtom.reportWrite(value, super.playlist, () {
+      super.playlist = value;
     });
   }
 
@@ -54,16 +50,18 @@ mixin _$PlayerStore on PlayerStoreBase, Store {
 
   @override
   Future<void> play(
-      {required PlaylistModel playlist, required List<SongModel> songs}) {
+      {required PlaylistModel playlist,
+      required List<SongModel> songs,
+      int? index}) {
     return _$playAsyncAction
-        .run(() => super.play(playlist: playlist, songs: songs));
+        .run(() => super.play(playlist: playlist, songs: songs, index: index));
   }
 
   @override
   String toString() {
     return '''
 audioHandler: ${audioHandler},
-medias: ${medias}
+playlist: ${playlist}
     ''';
   }
 }
