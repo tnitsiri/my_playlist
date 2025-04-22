@@ -32,6 +32,7 @@ abstract class PlayerStoreBase with Store {
   Future<void> play({
     required PlaylistModel playlist,
     required List<SongModel> songs,
+    bool play = true,
     int? index,
   }) async {
     this.playlist = playlist;
@@ -41,13 +42,15 @@ abstract class PlayerStoreBase with Store {
       songs: songs,
     );
 
-    if (index != null && index > -1 && index <= songs.length - 1) {
-      await audioHandler.skipToQueueItem(
-        index,
-      );
-    }
+    if (play) {
+      if (index != null && index > -1 && index <= songs.length - 1) {
+        await audioHandler.skipToQueueItem(
+          index,
+        );
+      }
 
-    await audioHandler.play();
+      await audioHandler.play();
+    }
   }
 
   // ANCHOR Update
@@ -81,7 +84,7 @@ abstract class PlayerStoreBase with Store {
       );
     }
 
-    audioHandler.addQueueItems(
+    await audioHandler.addQueueItems(
       queue,
     );
   }

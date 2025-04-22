@@ -52,9 +52,10 @@ mixin _$PlayerStore on PlayerStoreBase, Store {
   Future<void> play(
       {required PlaylistModel playlist,
       required List<SongModel> songs,
+      bool play = true,
       int? index}) {
-    return _$playAsyncAction
-        .run(() => super.play(playlist: playlist, songs: songs, index: index));
+    return _$playAsyncAction.run(() =>
+        super.play(playlist: playlist, songs: songs, play: play, index: index));
   }
 
   late final _$updateAsyncAction =

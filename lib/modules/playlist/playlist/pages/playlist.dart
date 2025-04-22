@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:my_playlist/constants/ui.constant.dart';
 import 'package:my_playlist/models/playlist.model.dart';
 import 'package:my_playlist/models/song.model.dart';
@@ -10,6 +11,7 @@ import 'package:my_playlist/modules/song/song/views/card.dart';
 import 'package:my_playlist/services/api.service.dart';
 import 'package:my_playlist/services/notify.service.dart';
 import 'package:my_playlist/stores/player.store.dart';
+import 'package:my_playlist/stores/playlist.store.dart';
 import 'package:my_playlist/views/buttons/back.dart';
 import 'package:provider/provider.dart';
 
@@ -35,6 +37,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
   // ANCHOR State
   late ApiService _apiService;
   late PlayerStore _playerStore;
+  late PlaylistStore _playlistStore;
 
   late PlaylistModel _playlist;
 
@@ -147,6 +150,24 @@ class _PlaylistPageState extends State<PlaylistPage> {
     );
   }
 
+  // ANCHOR Removed
+  void _removed({
+    required SongModel song,
+  }) async {
+    await _fetch();
+
+    _playlistStore.fetchList();
+
+    if (_playerStore.playlist != null &&
+        _playerStore.playlist!.id == _playlist.id) {
+      await _playerStore.play(
+        playlist: _playlist,
+        songs: _songs,
+        play: false,
+      );
+    }
+  }
+
   // ANCHOR Init
   void _init() {
     if (mounted) {
@@ -165,6 +186,11 @@ class _PlaylistPageState extends State<PlaylistPage> {
     );
 
     _playerStore = Provider.of<PlayerStore>(
+      context,
+      listen: false,
+    );
+
+    _playlistStore = Provider.of<PlaylistStore>(
       context,
       listen: false,
     );
@@ -199,99 +225,106 @@ class _PlaylistPageState extends State<PlaylistPage> {
               refetch: _fetch,
             ),
           ),
-          child: CustomScrollView(
-            slivers: [
-              CupertinoSliverRefreshControl(
-                onRefresh: _refresh,
-              ),
-              if (_songs.isNotEmpty) ...[
-                SliverPadding(
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).padding.bottom + 100,
-                  ),
-                  sliver: SliverList.builder(
-                    itemCount: _songs.length,
-                    itemBuilder: (
-                      BuildContext context,
-                      int index,
-                    ) {
-                      SongModel song = _songs[index];
+          child: SlidableAutoCloseBehavior(
+            child: CustomScrollView(
+              slivers: [
+                CupertinoSliverRefreshControl(
+                  onRefresh: _refresh,
+                ),
+                if (_songs.isNotEmpty) ...[
+                  SliverPadding(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).padding.bottom + 100,
+                    ),
+                    sliver: SliverList.builder(
+                      itemCount: _songs.length,
+                      itemBuilder: (
+                        BuildContext context,
+                        int index,
+                      ) {
+                        SongModel song = _songs[index];
 
-                      return SongCardView(
-                        key: ValueKey(
-                          song.id,
-                        ),
-                        playlist: _playlist,
-                        song: song,
-                        index: index,
-                        playerStore: _playerStore,
-                        play: () {
-                          _playerStore.play(
-                            playlist: _playlist,
-                            songs: _songs,
-                            index: index,
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ] else ...[
-                SliverToBoxAdapter(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 60,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      spacing: 30,
-                      children: [
-                        Text(
-                          'There are no songs in playlist.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
+                        return SongCardView(
+                          key: ValueKey(
+                            song.id,
                           ),
-                        ),
-                        CupertinoButton(
-                          minSize: 0,
-                          padding: EdgeInsets.zero,
-                          borderRadius: BorderRadius.circular(
-                            8,
+                          playlist: _playlist,
+                          song: song,
+                          index: index,
+                          apiService: _apiService,
+                          playerStore: _playerStore,
+                          play: () {
+                            _playerStore.play(
+                              playlist: _playlist,
+                              songs: _songs,
+                              index: index,
+                            );
+                          },
+                          removed: () => _removed(
+                            song: song,
                           ),
-                          onPressed: _addSongs,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 16,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 1,
-                                color: CupertinoTheme.of(context).primaryColor,
-                              ),
-                              borderRadius: BorderRadius.circular(
-                                8,
-                              ),
-                            ),
-                            child: Text(
-                              'Add Songs'.toUpperCase(),
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.3,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                        );
+                      },
                     ),
                   ),
-                ),
+                ] else ...[
+                  SliverToBoxAdapter(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 60,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        spacing: 30,
+                        children: [
+                          Text(
+                            'There are no songs in playlist.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          CupertinoButton(
+                            minSize: 0,
+                            padding: EdgeInsets.zero,
+                            borderRadius: BorderRadius.circular(
+                              8,
+                            ),
+                            onPressed: _addSongs,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 16,
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 1,
+                                  color:
+                                      CupertinoTheme.of(context).primaryColor,
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                  8,
+                                ),
+                              ),
+                              child: Text(
+                                'Add Songs'.toUpperCase(),
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.3,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
         if (_songs.isNotEmpty) ...[
