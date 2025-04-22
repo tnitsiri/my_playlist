@@ -11,7 +11,6 @@ import 'package:my_playlist/services/api.service.dart';
 import 'package:my_playlist/services/notify.service.dart';
 import 'package:my_playlist/stores/player.store.dart';
 import 'package:my_playlist/views/buttons/back.dart';
-import 'package:my_playlist/views/buttons/simple.dart';
 import 'package:provider/provider.dart';
 
 // ANCHOR Playlist Page
@@ -241,19 +240,53 @@ class _PlaylistPageState extends State<PlaylistPage> {
                 SliverToBoxAdapter(
                   child: Container(
                     padding: EdgeInsets.symmetric(
-                      vertical: 50,
+                      vertical: 60,
                     ),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 1,
-                        color: CupertinoColors.activeOrange,
-                      ),
-                    ),
-                    child: ButtonSimple(
-                      onPressed: _addSongs,
-                      child: Text(
-                        'Add Songs',
-                      ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 30,
+                      children: [
+                        Text(
+                          'There are no songs in playlist.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        CupertinoButton(
+                          minSize: 0,
+                          padding: EdgeInsets.zero,
+                          borderRadius: BorderRadius.circular(
+                            8,
+                          ),
+                          onPressed: _addSongs,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 16,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 1,
+                                color: CupertinoTheme.of(context).primaryColor,
+                              ),
+                              borderRadius: BorderRadius.circular(
+                                8,
+                              ),
+                            ),
+                            child: Text(
+                              'Add Songs'.toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.3,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grock/grock.dart';
 import 'package:my_playlist/cubits/doing.cubit.dart';
 import 'package:my_playlist/modules/home/home/pages/home.dart';
-import 'package:my_playlist/plugins/audio/a.dart';
+import 'package:my_playlist/plugins/audio/player.dart';
 import 'package:my_playlist/root.dart';
 import 'package:my_playlist/services/api.service.dart';
 import 'package:my_playlist/stores/player.store.dart';

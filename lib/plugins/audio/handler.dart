@@ -1,8 +1,8 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
-import 'package:my_playlist/plugins/audio/a.dart';
-import 'package:my_playlist/plugins/audio/b.dart';
-import 'package:my_playlist/plugins/audio/e.dart';
+import 'package:my_playlist/plugins/audio/player.dart';
+import 'package:my_playlist/plugins/audio/queue.dart';
+import 'package:my_playlist/plugins/audio/media.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:just_audio/just_audio.dart';
 
