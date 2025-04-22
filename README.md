@@ -1,16 +1,25 @@
-# my_playlist
+### My Playlist
+Zimpligital Mobile Application Testing
+___
 
-A new Flutter project.
+### Prerequisites
+1. [Git [2+]](https://git-scm.com/downloads)
+2. [Flutter [3.27.0+]](https://docs.flutter.dev/get-started/install)
+___
 
-## Getting Started
+### Development Setup
+``` bash
+git clone https://github.com/tnitsiri/my_playlist.git
+cd my_playlist
 
-This project is a starting point for a Flutter application.
+cp flutter run
+# Run ได้เฉพาะบน iOS เนื่องจากไม่ได้ Implement ในส่วนของ Android
+# ทำไม่ทันครับ
+```
+___
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Features
+1. Create Platlist
+2. Remove Playlist
+3. Add Songs to Playlist
+4. Remove Song from Playlist

@@ -12,8 +12,9 @@ class ApiService {
   // ANCHOR Init
   void _init() {
     BaseOptions options = BaseOptions(
-      baseUrl: 'http://172.20.10.3:5100/',
-      // baseUrl: 'http://localhost:5100/',
+      baseUrl: 'https://zimpligital.fandom.me/',
+      // baseUrl: 'http://172.20.10.3:4500/',
+      // baseUrl: 'http://localhost:4500/',
       connectTimeout: const Duration(
         minutes: 5,
       ),
