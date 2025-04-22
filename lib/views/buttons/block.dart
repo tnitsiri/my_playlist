@@ -40,7 +40,7 @@ class ButtonBlock extends StatelessWidget {
             text,
             style: TextStyle(
               fontSize: 15.5,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
               color: CupertinoColors.white,
               letterSpacing: 0.5,
             ),

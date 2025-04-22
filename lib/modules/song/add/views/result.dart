@@ -113,6 +113,33 @@ class _SongAddResultViewState extends State<SongAddResultView> {
                           },
                         ),
                       ),
+                      Positioned(
+                        bottom: 3,
+                        right: 3,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 4,
+                            horizontal: 7,
+                          ),
+                          decoration: BoxDecoration(
+                            color: CupertinoColors.black.withAlpha(
+                              opacityToAlphaUtil(0.65),
+                            ),
+                            borderRadius: BorderRadius.circular(
+                              10,
+                            ),
+                          ),
+                          child: Text(
+                            widget.result.durationText,
+                            style: TextStyle(
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w500,
+                              color: CupertinoColors.white,
+                              letterSpacing: 0.1,
+                            ),
+                          ),
+                        ),
+                      ),
                       if (widget.isSelected) ...[
                         Positioned.fill(
                           child: Container(

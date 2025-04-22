@@ -3,17 +3,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grock/grock.dart';
 import 'package:my_playlist/cubits/doing.cubit.dart';
 import 'package:my_playlist/modules/home/home/pages/home.dart';
+import 'package:my_playlist/plugins/audio/a.dart';
 import 'package:my_playlist/root.dart';
 import 'package:my_playlist/services/api.service.dart';
+import 'package:my_playlist/stores/player.store.dart';
 import 'package:my_playlist/stores/playlist.store.dart';
 import 'package:my_playlist/styles/common.style.dart';
 import 'package:provider/provider.dart';
 
 // ANCHOR App
 class App extends StatelessWidget {
+  final AudioPlayerHandler audioHandler;
+
   // ANCHOR Constructor
   const App({
     super.key,
+    required this.audioHandler,
   });
 
   // ANCHOR Build
@@ -26,6 +31,13 @@ class App extends StatelessWidget {
         Provider<ApiService>(
           create: (_) {
             return ApiService();
+          },
+        ),
+        Provider<PlayerStore>(
+          create: (_) {
+            return PlayerStore(
+              audioHandler,
+            );
           },
         ),
         Provider<PlaylistStore>(

@@ -7,8 +7,10 @@ import 'package:my_playlist/models/song.model.dart';
 import 'package:my_playlist/modules/playlist/playlist/views/options.dart';
 import 'package:my_playlist/modules/song/add/pages/add.dart';
 import 'package:my_playlist/modules/song/song/views/card.dart';
+import 'package:my_playlist/plugins/audio/e.dart';
 import 'package:my_playlist/services/api.service.dart';
 import 'package:my_playlist/services/notify.service.dart';
+import 'package:my_playlist/stores/player.store.dart';
 import 'package:my_playlist/stores/playlist.store.dart';
 import 'package:my_playlist/views/buttons/back.dart';
 import 'package:my_playlist/views/buttons/simple.dart';
@@ -36,6 +38,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
   // ANCHOR State
   late ApiService _apiService;
   late PlaylistStore _playlistStore;
+  late PlayerStore _playerStore;
 
   late PlaylistModel _playlist;
 
@@ -120,6 +123,20 @@ class _PlaylistPageState extends State<PlaylistPage> {
     _fetch();
   }
 
+  // ANCHOR Play
+  void _play() async {
+    await _playerStore.audioHandler.play();
+
+    // if (_songs.isEmpty) {
+    //   return;
+    // }
+
+    // await _playerStore.play(
+    //   playlist: _playlist,
+    //   songs: _songs,
+    // );
+  }
+
   // ANCHOR Init
   void _init() {
     if (mounted) {
@@ -138,6 +155,11 @@ class _PlaylistPageState extends State<PlaylistPage> {
     );
 
     _playlistStore = Provider.of<PlaylistStore>(
+      context,
+      listen: false,
+    );
+
+    _playerStore = Provider.of<PlayerStore>(
       context,
       listen: false,
     );
@@ -176,6 +198,14 @@ class _PlaylistPageState extends State<PlaylistPage> {
             slivers: [
               CupertinoSliverRefreshControl(
                 onRefresh: _refresh,
+              ),
+              SliverToBoxAdapter(
+                child: CupertinoButton(
+                  onPressed: _play,
+                  child: Text(
+                    'Play',
+                  ),
+                ),
               ),
               if (_songs.isNotEmpty) ...[
                 SliverPadding(

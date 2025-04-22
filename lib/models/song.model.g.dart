@@ -18,8 +18,8 @@ SongModel _$SongModelFromJson(Map<String, dynamic> json) => SongModel(
       thumbnail: json['thumbnail'] as String?,
       durationText: json['durationText'] as String,
       durationSeconds: (json['durationSeconds'] as num).toInt(),
-      filePathname: json['filePathname'] as String,
-      fileUrl: json['fileUrl'] as String,
+      pathname: json['pathname'] as String,
+      url: json['url'] as String,
     );
 
 Map<String, dynamic> _$SongModelToJson(SongModel instance) => <String, dynamic>{
@@ -32,6 +32,6 @@ Map<String, dynamic> _$SongModelToJson(SongModel instance) => <String, dynamic>{
       'thumbnail': instance.thumbnail,
       'durationText': instance.durationText,
       'durationSeconds': instance.durationSeconds,
-      'filePathname': instance.filePathname,
-      'fileUrl': instance.fileUrl,
+      'pathname': instance.pathname,
+      'url': instance.url,
     };

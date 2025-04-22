@@ -41,6 +41,7 @@ class _SongAddPageState extends State<SongAddPage> {
   final StreamController<bool> _searchQueryingStreamController =
       StreamController<bool>();
 
+  final ScrollController _scrollController = ScrollController();
   final TextEditingController _qController = TextEditingController();
   final List<String> _songsId = [];
 
@@ -58,6 +59,7 @@ class _SongAddPageState extends State<SongAddPage> {
         false,
       );
     } else {
+      _scrollController.jumpTo(0);
       _searchQueryingStreamController.add(
         true,
       );
@@ -158,6 +160,7 @@ class _SongAddPageState extends State<SongAddPage> {
   void dispose() {
     _searchResultsStreamController.close();
     _searchQueryingStreamController.close();
+    _scrollController.dispose();
     _qController.dispose();
 
     super.dispose();
@@ -260,6 +263,8 @@ class _SongAddPageState extends State<SongAddPage> {
           ),
           Expanded(
             child: CustomScrollView(
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               slivers: [
                 StreamBuilder<List<SearchResultModel>>(

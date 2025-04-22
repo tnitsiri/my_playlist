@@ -41,10 +41,13 @@ class _SongAddSaveViewState extends State<SongAddSaveView> {
 
   // ANCHOR Save
   void _save() async {
+    AppService.unfocus();
+
     DoingCubit doingCubit = context.read<DoingCubit>();
 
-    doingCubit.show();
-    AppService.unfocus();
+    doingCubit.show(
+      message: 'It may take time longer than usual to process.',
+    );
 
     bool isSuccess = false;
 

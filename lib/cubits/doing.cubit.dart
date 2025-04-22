@@ -15,10 +15,14 @@ class DoingCubit extends Cubit<bool> {
   }
 
   // ANCHOR Show
-  void show() {
+  void show({
+    String? message,
+  }) {
     emit(true);
 
-    SVProgressHUD.show();
+    SVProgressHUD.show(
+      status: message,
+    );
   }
 
   // ANCHOR Hide
