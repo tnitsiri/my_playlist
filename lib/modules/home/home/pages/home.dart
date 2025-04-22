@@ -9,6 +9,7 @@ import 'package:my_playlist/modules/playlist/playlist/pages/playlist.dart';
 import 'package:my_playlist/modules/playlist/playlist/views/card.dart';
 import 'package:my_playlist/services/api.service.dart';
 import 'package:my_playlist/services/notify.service.dart';
+import 'package:my_playlist/stores/player.store.dart';
 import 'package:my_playlist/stores/playlist.store.dart';
 import 'package:my_playlist/views/buttons/button.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +33,7 @@ class _HomePageState extends State<HomePage> {
   // ANCHOR State
   late ApiService _apiService;
   late PlaylistStore _playlistStore;
+  late PlayerStore _playerStore;
 
   late ReactionDisposer _playlistFetchListDisposer;
 
@@ -145,6 +147,11 @@ class _HomePageState extends State<HomePage> {
       context,
       listen: false,
     );
+
+    _playerStore = Provider.of<PlayerStore>(
+      context,
+      listen: false,
+    );
   }
 
   // ANCHOR Init State
@@ -202,6 +209,7 @@ class _HomePageState extends State<HomePage> {
                     playlist.id,
                   ),
                   playlist: playlist,
+                  playerStore: _playerStore,
                 );
               },
             ),
